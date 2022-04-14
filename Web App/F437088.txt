@@ -1,4 +1,4 @@
-GPS STARTED (Acc sample rate= 1ms, GPS sample rate = 0.5s, GPS decimals = 6)
+GPS STARTED (Acc sample rate= 10ms, GPS sample rate = 1s, GPS decimals = 6)
 Date/Time: 2022-02-02T01:01:39.00 X: 4.08 Y: 2.09 Z: 2.32 Lat: 48.481220 Long: -72.494834
 Date/Time: 2022-02-02T01:01:39.00 X: 4.08 Y: 2.09 Z: 2.32 Lat: 48.481220 Long: -72.494834
 Date/Time: 2022-02-02T01:01:39.00 X: 4.08 Y: 2.09 Z: 2.32 Lat: 48.481220 Long: -72.494834
