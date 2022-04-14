@@ -1,0 +1,115 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<body >
+	<p id = "data"></p>
+	<p>Welcome</p>
+  <label class="custom-file-upload"><input type="file" id="file-input" />Upload File</label>
+
+  
+
+  <pre id="upload_status"></pre>
+	
+</body>
+
+
+{% endblock %}
+
+<script>
+{% block script %}
+  function parseText(text) {
+    json_obj = []
+    re = new RegExp('(?:(X|Y|Z|Lat|Long|Date/Time)[ :]+([0-9-./:T+]+))', 'g')
+    const array = [...text.matchAll(re)];
+    count = -1
+    date_time = null
+    console.log(array)
+    for (const element of array) {
+      if (element[1] == "Date/Time"){
+        count = count+1
+        date_time = element[2]
+        json_obj[count] = {"DateTime":date_time}
+      }
+      else{
+        // console.log(json_obj)
+        json_obj[count][element[1]] = parseFloat(element[2])
+        // if (element[1] =="X"){
+        //   json_obj[count][element[1]] = parseFloat(element[2])+30
+        // }
+      }
+    }
+    // re.exec(text)
+    console.log(json_obj)
+    return json_obj
+    }
+  function readSingleFile(e) {
+    var file = e.target.files[0];
+    if (!file) {
+      return;
+    }
+    // console.log(e)
+    var reader = new FileReader();
+    
+    reader.onload = function(e) {
+      var contents = e.target.result;
+      // displayContents(contents);
+
+      contents = JSON.stringify(parseText(contents)).replace(/(\r\n|\n|\r)/gm, "").replace(/(")/gm, "'");
+
+      // console.log(contents)
+      
+      Query(`mutation{addTrip(trip:"${contents}", filename:"${file['name']}"){success}}`).then((ret) => {
+        if (ret["addTrip"]["success"]){
+          var element = document.getElementById('upload_status');
+          element.textContent = "Successfully uploaded";
+        }else{
+          var element = document.getElementById('upload_status');
+          element.textContent = "Could not upload";
+        }
+
+        // ["addTrip"]["success"]
+      })
+    };
+    reader.readAsText(file);
+  }
+
+  function displayContents(contents) {
+    var element = document.getElementById('upload_status');
+    element.textContent = contents;
+  }
+
+  document.getElementById('file-input').addEventListener('change', readSingleFile, false);
+
+{% endblock %}
+</script>
+
+<style type="text/css">
+{% block style %}
+p {
+margin-top: 1px;
+margin-bottom: 20px;
+font-weight: 10px;
+font-size: 60px;
+
+}
+input[type="file"] {
+    display: none;
+}
+#upload_status{
+font-size: 20px;
+}
+
+
+.custom-file-upload {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: inline-block;
+    font-size: 30px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+.custom-file-upload:hover {background-color: #303030;}
+{% endblock %}
+
+</style>

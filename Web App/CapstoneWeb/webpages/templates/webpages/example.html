@@ -1,0 +1,62 @@
+<!-- <body>
+	<p id="greeting"></p>
+	<h1>hi</h1>
+</body>
+<script type="text/javascript">
+	// ;
+	// // let response;
+ 
+	// let data = await
+	// .then(data => data);
+	// // .then((response) => response.json());
+	// // await data;
+	// document.getElementById("greeting").innerHTML = data;
+	// // alert("This alert box was called with the onload event");
+
+
+	const request = async () => {
+    const response = await fetch('/graphql/', {
+		method: 'POST',
+		headers: {
+		'Content-Type': 'application/json',
+		'Accept': 'application/json',
+		},
+		body: JSON.stringify({query: "{ hello }"})
+		});
+    const json = await response.json();
+    document.getElementById("greeting").innerHTML = json.data.hello;
+
+    console.log(json);
+    return json;
+	}
+
+	document.getElementById("greeting").innerHTML = request();
+
+</script> -->
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>JavaScript Mouse Event</title>
+    </head>
+    <body style = "text-align:center;">
+      
+          
+        <h1>
+            mouseEvent shiftKey Property
+        </h1>
+        <p id="shift"></p>
+        <button onclick = "geek (event);" >Get Shift key state!</button>        
+        <script>
+        function geek (event) {
+            if (event.shiftKey) {
+                document.getElementById("shift").innerHTML = "Shift key is pressed.";
+            }
+            else {
+                document.getElementById("shift").innerHTML = "Shift key is not pressed.";
+            }
+        }
+        </script>
+    </body>
+</html>

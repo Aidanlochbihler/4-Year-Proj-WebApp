@@ -1,0 +1,107 @@
+
+{% extends "base.html" %}
+{% block head %}
+{% endblock %}
+{% block content %}
+    <div class="text2">The grid shows the average accleration over all trips for a point on the map.</div>
+    <div class="text2">The colour shows the accleration at that point. </div>
+    <div class="text2">Red boxes indicates an accleration of 0.4G which is the point at which individuals may feel uncomfortable. </div>
+    <div id="map"></div>
+
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=<Api Key>&callback=initMap"
+      async
+    ></script>
+
+{% endblock %}
+
+<script>
+{% block script %}
+
+  function initMap() {
+    const map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 3,
+      center: { lat: 0, lng: -180 },
+      mapTypeId: "hybrid",
+      // mapTypeId: 'terrain'
+    });
+    grid_width = {{grid_width|safe}}
+    grid_height = {{grid_height|safe}}
+    grid = {{grid|safe}}
+
+    for (var lat_str of Object.keys(grid)) {
+      for (var lng_str of Object.keys(grid[lat_str])) {
+        lat = parseFloat(lat_str)
+        lng = parseFloat(lng_str)
+
+        Coords = [
+          { "lat": lat        , "lng": lng},
+          { "lat": lat+grid_height , "lng": lng},
+          { "lat": lat+grid_height , "lng":lng+grid_width },
+          { "lat": lat        , "lng": lng+grid_width },
+          ];
+          console.log(Coords)
+          square = new google.maps.Polygon({
+            paths: Coords,
+            strokeColor: grid[lat_str][lng_str]['color'],
+            strokeOpacity: 0.35,
+            strokeWeight: 2,
+            fillColor: grid[lat_str][lng_str]['color'],
+            fillOpacity: 0.35,
+            })
+            
+
+          square.setMap(map);
+      };
+    };
+
+
+
+    // const Coords = [
+    // { lat: 45.469085        , lng: -75.490859},
+    // { lat: 45.469085+0.00005 , lng: -75.490859},
+    // { lat: 45.469085+0.00005 , lng: -75.490859+0.00007 },
+    // { lat: 45.469085        , lng: -75.490859+0.00007 },
+    // ];
+
+    // const square = new google.maps.Polygon({
+    // paths: Coords,
+    // strokeColor: "#FF0000",
+    // strokeOpacity: 0.8,
+    // strokeWeight: 2,
+    // fillColor: "#FF0000",
+    // fillOpacity: 0.35,
+    // })
+    
+
+    square.setMap(map);
+    
+    map.setCenter(Coords[0]); 
+    map.setZoom(18)
+    console.log()
+}
+
+
+{% endblock %}
+</script>
+
+<style type="text/css">
+{% block style %}
+#map {
+  height: 950;
+  width:  2100;
+  margin-left: 2%;
+  margin-top: 2.5%;
+
+
+}
+ table, td, tr{
+    padding-top: 40px;
+    padding-left: 40px;
+
+}
+
+{% endblock %}
+
+</style>

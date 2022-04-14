@@ -1,0 +1,123 @@
+
+{% extends "base.html" %}
+{% url 'trips' %}
+{% block head %}
+{% endblock %}
+{% block content %}
+  
+  <div id="trip_list">
+    <table id = "trip_table" rules="rows">
+      <tr>
+        <td>
+          <p class="button">Trip Name</p>
+        </td>
+        <td>
+          <button onclick = "location.href='{% url 'trips'%}Filename/{{sort_direction|safe}}/'" class="button">
+            Filename {{FilenameIcon|safe}}
+          </button>
+        </td>
+        <td>
+          <button onclick = "location.href='{% url 'trips'%}TripDuration/{{sort_direction|safe}}/'" class="button">
+            Trip Duration {{TripDurationIcon|safe}}
+          </button>
+        </td>
+        <td>
+          <button onclick = "location.href='{% url 'trips'%}StartTime/{{sort_direction|safe}}/'" class="button">
+            Start Date {{StartTimeIcon|safe}}
+          </button>
+        </td>
+        <td>
+          <button onclick = "location.href='{% url 'trips'%}EndTime/{{sort_direction|safe}}/'" class="button">
+            End Date {{EndTimeIcon|safe}}
+          </button>
+        </td>
+        <td>
+          <button onclick = "location.href='{% url 'trips'%}DateUploaded/{{sort_direction|safe}}/'" class="button">
+            Date Uploaded {{DateUploadedIcon|safe}}
+          </button>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+{% endblock %}
+
+
+
+<script>
+{% block script %}
+  function DateToString(d) {
+    d = new Date(d+'z')
+    function pad(n) {return n<10 ? '0'+n : n}
+      return d.getFullYear()+'-'
+           + pad(d.getMonth()+1)+'-'
+           + pad(d.getDate())+' '
+           + pad(d.getHours())+':'
+           + pad(d.getMinutes())+':'
+           + pad(d.getSeconds())
+  }
+
+  trips = {{trips|safe}}
+  trips.forEach(trip => {
+    console.log(trip)
+    var table = document.getElementById("trip_table");
+
+    // Create an empty <tr> element and add it to the 1st position of the table:
+    var row = table.insertRow(1);
+
+    // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+    var cell0 = row.insertCell(0);
+    var cell1 = row.insertCell(1);
+    var cell2 = row.insertCell(2);
+    var cell3 = row.insertCell(3);
+    var cell4 = row.insertCell(4);
+    //Add some text to the new cells: 
+    // cell1.innerHTML = '<a href="/trip/'+trip['_id']+'" class="button">Trip</a>';
+    console.log(trip)
+    // 
+    cell0.innerHTML = '<a href="/trip/'+trip['_id']+'" class="button">Trip</a>';
+    cell1.innerHTML = trip['Filename'];
+    cell2.innerHTML = trip['duration'];
+    cell3.innerHTML = DateToString(trip['StartTime']);
+    cell4.innerHTML = DateToString(trip['EndTime']);
+  }); 
+
+
+{% endblock %}
+</script>
+
+
+
+
+<style type="text/css">
+{% block style %}
+  #trip_table{
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  }
+
+ td, tr{
+    font-size: 30px;
+    padding-top: 10px;
+    padding-left: 10px;
+  padding-right: 50px;
+    color:  #adadad;
+    font-family: Arial;
+    text-align: left;
+    border-bottom: 1px solid #808080;
+
+
+    width:100%;
+    border-collapse:collapse;
+
+    }
+
+tr:hover {background-color: #303030;}
+table { 
+  white-space: nowrap; 
+  margin-top: 10px;
+
+}
+/*tr:nth-child(even) {background-color: #f2f2f2;}*/
+{% endblock %}
+</style>

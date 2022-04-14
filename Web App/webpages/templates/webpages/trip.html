@@ -1,0 +1,84 @@
+
+{% extends "base.html" %}
+{% block head %}
+{% endblock %}
+{% block content %}
+  
+	<p id = "data">Options</p>
+
+  <table>
+  <tr>
+    <td><div style="width:1000;height:1000">{{ graph_div|safe }}</div></td>
+    <td id="CELL2"><div id="map"></div></td>
+  </tr>
+
+  </table>
+
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMfU8bGiPW0duM_sru0b1qHUT5O65XdS8&callback=initMap"
+      async
+    ></script>
+
+{% endblock %}
+
+<script>
+{% block script %}
+  Query(`{getAllTrips{trips}}`).then(function(result) {
+  // console.log(result["getAllTrips"]["trips"])
+  // document.getElementById("data").textContent = result["getAllTrips"]["trips"]
+})
+
+
+  // jsonObject = JSON.parse('{{ time_series_json_string | escapejs }}')
+  // console.log({{cords|safe}})
+
+  function initMap() {
+    const map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 3,
+      center: { lat: 0, lng: -180 },
+      mapTypeId: "hybrid",
+    });
+    const flightPlanCoordinates = {{cords|safe}}
+    const colors = {{colors|safe}}
+    console.log(colors.length)
+    for (let i = 0; i < colors.length-1; i++) {
+      flightPath = new google.maps.Polyline({
+        path: [flightPlanCoordinates[i],flightPlanCoordinates[i+1]],
+        geodesic: true,
+        strokeColor: colors[i+1],
+        strokeOpacity: 0.6,
+        strokeWeight: 8,
+      });
+
+      flightPath.setMap(map);
+    }
+
+    console.log()
+    
+    map.setCenter(flightPlanCoordinates[0]); 
+    map.setZoom(18)
+}
+
+
+{% endblock %}
+</script>
+
+<style type="text/css">
+{% block style %}
+#map {
+  height: 1000;
+  width:  1250;
+  margin-left: 7%;
+
+
+}
+ table, td, tr{
+    padding-top: 40px;
+    padding-left: 40px;
+
+}
+
+{% endblock %}
+
+</style>

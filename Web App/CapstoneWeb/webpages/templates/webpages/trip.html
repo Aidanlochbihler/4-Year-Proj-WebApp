@@ -1,0 +1,145 @@
+
+{% extends "base.html" %}
+{% block head %}
+{% endblock %}
+{% block content %}
+  
+	<div class="text2">Click on the graphs data points to zoom in on their map location</div>
+  <div class="text2">Click on the "Remove Trip" button to remove this trip</div>
+  <div class="text2">Red lines indicates an accleration of 0.4G which is the point at which individuals may feel uncomfortable. </div>
+  <button style="font-size: 20px;" onclick = "remove_trip()" class="button">Remove Trip</button>
+  <table>
+  <tr>
+    <td><div style="width:950;height:850" id='graph'></div></td>
+    <td id="CELL2"><div id="map"></div></td>
+  </tr>
+
+  </table>
+
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=<Api Key>&callback=initMap"
+    async
+  ></script>
+
+  <script type="module">
+    import "https://cdn.plot.ly/plotly-2.11.1.min.js"
+
+    
+    
+
+
+    function DateToString(d) {
+      d = new Date(d+'z')
+      function pad(n) {return n<10 ? '0'+n : n}
+        return d.getFullYear()+'-'
+             + pad(d.getMonth()+1)+'-'
+             + pad(d.getDate())+' '
+             + pad(d.getHours())+':'
+             + pad(d.getMinutes())+':'
+             + pad(d.getSeconds())
+    }
+    
+    var x_vals_local = []
+    var x_vals = {{x_vals|safe}}
+    x_vals.forEach(x_val => {
+      x_vals_local.push(DateToString(x_val))
+    });
+
+
+    var trace = {
+      x: x_vals_local,
+      y: {{y_vals|safe}},
+      mode: 'markers',
+      type: 'scatter'
+    };
+    const flightPlanCoordinates = {{cords|safe}}
+
+    Plotly.newPlot("graph", [trace])
+
+    var myPlot = document.getElementById('graph')
+    myPlot.on('plotly_click', function(data){
+
+    window.map.setCenter(flightPlanCoordinates[data.points[0].pointIndex])
+
+  });
+
+
+  </script>
+
+    
+
+{% endblock %}
+
+<script>
+{% block script %}
+  const trip_id = "{{trip_id|safe}}"
+    function remove_trip() {
+      Query(`mutation{removeTrip(tripId:"${trip_id}"){success}}`).then((ret) => {
+          if (ret["removeTrip"]["success"]){
+            window.location.href = '/welcome/';
+          }else{
+            window.location.href = '/welcome/';
+          }
+
+          // ["addTrip"]["success"]
+        })
+    }
+
+
+
+  function initMap() {
+    window.map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 3,
+      center: { lat: 0, lng: -180 },
+      mapTypeId: "hybrid",
+    });
+    const flightPlanCoordinates = {{cords|safe}}
+    const colors = {{colors|safe}}
+    console.log(colors.length)
+    for (let i = 0; i < colors.length-1; i++) {
+      flightPath = new google.maps.Polyline({
+        path: [flightPlanCoordinates[i],flightPlanCoordinates[i+1]],
+        geodesic: true,
+        strokeColor: colors[i+1],
+        strokeOpacity: 0.6,
+        strokeWeight: 8,
+      });
+
+      flightPath.setMap(window.map);
+    }
+
+    console.log()
+    
+    window.map.setCenter(flightPlanCoordinates[0]); 
+    window.map.setZoom(18)
+  } 
+
+
+  // jsonObject = JSON.parse('{{ time_series_json_string | escapejs }}')
+  // console.log({{cords|safe}})
+
+  
+
+
+{% endblock %}
+</script>
+
+<style type="text/css">
+{% block style %}
+#map {
+  height: 850;
+  width:  950;
+  margin-left: 7%;
+
+
+}
+ table, td, tr{
+    padding-top: 40px;
+    padding-left: 40px;
+
+}
+
+{% endblock %}
+
+</style>
