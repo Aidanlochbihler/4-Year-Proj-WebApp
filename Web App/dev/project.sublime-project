@@ -1,0 +1,59 @@
+{
+	"build_systems":
+	[
+		{
+			"cancel": "terminus_cancel_build",
+			"cmd":
+			[
+				"C:\\Users\\aidan\\Desktop\\DjangoServer\\dev\\build.bat"
+			],
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+			"name": "terminus",
+			"target": "terminus_exec",
+			// "working_dir": "C:/Users/Andrew/Documents/code/scheduler",
+		},
+		{
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+			"name": "Python Builder",
+			"shell_cmd": "C:\\Users\\aidan\\Desktop\\DjangoServer\\dev\\build.bat",
+		},
+		{
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+			"name": "Anaconda Python Builder",
+			"selector": "source.python",
+			"shell_cmd": "\"python\" -u \"$file\"",
+		}
+	],
+	/*"folders":
+	[
+		{
+			"path": "C:\\Users\\Andrew\\Documents\\code\\scheduler\\src",
+		},
+	],*/
+	"settings":
+	{
+		"SublimeLinter.linters.eslint.disable": true,
+		"SublimeLinter.linters.flake8.args":
+		[
+			"--exclude=__pycache__,.pyc",
+			"--max-line-length=99",
+			"--select=E,F,W,C90"
+		],
+		"SublimeLinter.linters.flake8.disable": false,
+	},
+	/*"folders":
+	[
+		{
+			"path": "C:\\Users\\Andrew\\Documents\\code\\JudgeProject\\DjangoServer"
+		}
+	],*/
+	"folders":
+	[
+		{
+			"path": "C:\\Users\\aidan\\Desktop\\DjangoServer\\CapstoneWeb",
+		},
+		{
+			"path": ".",
+		},
+	],
+}
